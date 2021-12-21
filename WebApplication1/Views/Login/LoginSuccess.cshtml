@@ -1,0 +1,122 @@
+﻿
+@model WebApplication1.Models.UserModel
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - My Forecast Project</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+   
+  
+
+</head>
+
+<div class="container">
+     <h1>Welcome @Html.DisplayFor(model => model.UserName) </h1>
+   
+    <h4 class="mb-4">
+      <strong>Astronomy Picture of the Day <em class="date" id="pic_date"></em></strong>      
+    </h4>
+
+    <p>
+      Each day a different image or photograph of our fascinating universe
+      is featured, along with a brief explanation written by a professional
+      astronomer.
+    </p>
+    
+        <h2>Astronomy Picture of the day</h2>
+        <input type="date" id="date" onchange="getDate();">
+
+     <div class="row">   
+        <!-- Section: Media -->
+        <img src="" alt="" id="apod_pic" class="col-md-8 mb-4 mb-md-0"></img>
+        <!-- Section: Media -->
+     
+      <div class="col-md-4 mb-4 mb-md-0">
+        <!-- Section: Description -->
+        <section class="">
+          <h5 class="img-title" id="title"></h5>
+          <h4 class="img-copyright" id="pic_copy"></h4>         
+          <p id="caption"></p>
+        </section>
+        <!-- Section: Description -->
+      </div>
+    </div>
+       
+     
+   
+ 
+ 
+    <script type="text/javascript">
+ 
+        // Declaration of variables
+        var method = "GET";
+        const key =
+        "VElNBHxm54DIrE6CnNhrfNWMUVanqzmaEO3B8v4u";
+ 
+        var url =
+        "https://api.nasa.gov/planetary/apod?api_key="
+                + key + "&date=";
+        var mode = true;
+        var date;
+ 
+        // Function defination to get date from
+        // input box and supply in sendHttpRequest
+        // function
+        function getDate() {
+            date = document.getElementById("date").value;
+            console.log(date);
+            sendHttpRequest(method, url + date,
+                mode).then((data) => {
+                console.log(data);
+                update(data);
+            });
+ 
+        }
+ 
+        // Declaration of update function to
+        // display the fetched data on webpage
+        function update(data) {
+            document.getElementById("pic_date")
+                .innerHTML = data.date;
+ 
+            document.getElementById("title")
+                .innerHTML = data.title;
+
+            document.getElementById("pic_copy")
+                .innerHTML = data.copyright;
+ 
+            document.getElementById("apod_pic")
+                .src = data.url;
+ 
+            document.getElementById("caption")
+                .innerHTML = data.explanation;
+            return data;          
+          
+        } 
+        // Send request to nasa portal to data
+        // using the XMLHttpRequest
+        function sendHttpRequest(method, url, mode) {
+            return new Promise((resolve, reject) => {
+ 
+                var req = new XMLHttpRequest();
+                req.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            var data = JSON
+                                .parse(this.response);
+                            console.log(data);
+                            resolve(data);
+                        }
+                    }
+                }
+                req.open(method, url, mode);
+                req.send();
+            });
+        }
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</div>
